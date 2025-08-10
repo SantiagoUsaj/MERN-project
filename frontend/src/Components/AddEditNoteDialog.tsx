@@ -3,21 +3,36 @@ import type { Note } from "../Models/Note";
 import type { NoteInput } from "../services/notes_api";
 import * as NotesApi from "../services/notes_api";
 
-interface AddNoteDialogProps {
+interface AddEditNoteDialogProps {
+  noteToEdit?: Note;
   onDismiss: () => void;
   onNoteSaved: (note: Note) => void;
 }
 
-const AddNoteDialog = ({ onDismiss, onNoteSaved }: AddNoteDialogProps) => {
+const AddEditNoteDialog = ({
+  noteToEdit,
+  onDismiss,
+  onNoteSaved,
+}: AddEditNoteDialogProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<NoteInput>();
+  } = useForm<NoteInput>({
+    defaultValues: {
+      title: noteToEdit?.title || "",
+      text: noteToEdit?.text || "",
+    },
+  });
 
   async function onSubmit(input: NoteInput) {
     try {
-      const noteResponse = await NotesApi.createNote(input);
+      let noteResponse: Note;
+      if (noteToEdit) {
+        noteResponse = await NotesApi.updateNote(noteToEdit._id, input);
+      } else {
+        noteResponse = await NotesApi.createNote(input);
+      }
       onNoteSaved(noteResponse);
     } catch (error) {
       console.error(error);
@@ -28,7 +43,9 @@ const AddNoteDialog = ({ onDismiss, onNoteSaved }: AddNoteDialogProps) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ">
       <div className="bg-white rounded-lg p-6 shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Add Note</h2>
+        <h2 className="text-xl font-bold mb-4">
+          {noteToEdit ? "Edit Note" : "Add Note"}
+        </h2>
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor="title" className="mb-2 font-semibold">
             Title
@@ -57,7 +74,7 @@ const AddNoteDialog = ({ onDismiss, onNoteSaved }: AddNoteDialogProps) => {
             className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 transition-colors mb-4"
             disabled={isSubmitting}
           >
-            Add Note
+            Save
           </button>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-600 transition-colors"
@@ -71,4 +88,4 @@ const AddNoteDialog = ({ onDismiss, onNoteSaved }: AddNoteDialogProps) => {
   );
 };
 
-export default AddNoteDialog;
+export default AddEditNoteDialog;
