@@ -1,35 +1,44 @@
 # MERN Project
 
-This repository contains my work following the [Complete MERN Beginner Course (2023)](https://www.youtube.com/watch?v=FcxjCPeicvU).
+This repository contains a full-stack MERN application, organized into two main folders:
 
-## About
+- **backend/**: Node.js, Express, MongoDB, TypeScript
+- **frontend/**: React, TypeScript, Vite
 
-I'm learning the MERN stack (MongoDB, Express, React, Node.js) by building a full-stack application step by step. Each branch in this repo corresponds to a part of the course.
+## Structure
+
+```
+MERN-project/
+   backend/
+      ...
+   frontend/
+      ...
+```
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js >= 18
+- npm
+- MongoDB (local or Atlas)
+
+### Setup
+
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/MERN-project.git
-   ```
-2. Install dependencies for both client and server:
-   ```bash
+   ```sh
+   git clone <repo-url>
    cd MERN-project
-   npm install
-   cd client
-   npm install
    ```
-3. Start the development servers:
-   ```bash
-   # In the root folder
-   npm run dev
-   # In the client folder
-   npm start
+2. Install dependencies for both frontend and backend:
+   ```sh
+   cd backend && npm install
+   cd ../frontend && npm install
    ```
 
-## Branches
+## Running the Project
 
-- Each branch matches a section of the course for easier reference.
+- See each folder's README for specific instructions.
 
 ## Resources
 
@@ -37,6 +46,12 @@ I'm learning the MERN stack (MongoDB, Express, React, Node.js) by building a ful
 
 ![Course Thumbnail](https://user-images.githubusercontent.com/52977034/212036784-9ea937a6-f6d7-4d1f-8acf-f2975ff7ab5c.png)
 
+## Author
+
+Santiago Usaj
+
 ---
 
-Feel free to fork or contribute as you follow along!
+For more details, check the README in each subfolder.
+
+¡Siéntete libre de hacer fork o contribuir mientras sigues el curso!
