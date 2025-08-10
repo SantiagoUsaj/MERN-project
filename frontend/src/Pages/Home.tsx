@@ -7,6 +7,8 @@ import { FaPlus } from "react-icons/fa";
 
 export default function Home() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
 
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
@@ -14,11 +16,15 @@ export default function Home() {
   useEffect(() => {
     async function loadNotes() {
       try {
+        setShowNotesLoadingError(false);
+        setNotesLoading(true);
         const notes = await NotesApi.fetchNotes();
         setNotes(notes);
       } catch (error) {
         console.error("Failed to fetch notes:", error);
-        alert("Failed to load notes. Please try again later.");
+        setShowNotesLoadingError(true);
+      } finally {
+        setNotesLoading(false);
       }
     }
     loadNotes();
@@ -34,6 +40,19 @@ export default function Home() {
     }
   }
 
+  const notesGrid = (
+    <>
+      {notes.map((note) => (
+        <Note
+          key={note._id}
+          note={note}
+          onDeleteNoteClick={deleteNote}
+          onNoteClicked={setNoteToEdit}
+        />
+      ))}
+    </>
+  );
+
   return (
     <main className="bg-gray-100 min-h-screen flex flex-col items-center p-8 text-justify">
       <button
@@ -43,14 +62,17 @@ export default function Home() {
         <FaPlus className="inline-block mr-1" />
         Add Note
       </button>
-      {notes.map((note) => (
-        <Note
-          key={note._id}
-          note={note}
-          onDeleteNoteClick={deleteNote}
-          onNoteClicked={setNoteToEdit}
-        />
-      ))}
+      {notesLoading && <div>Loading notes...</div>}
+      {showNotesLoadingError && (
+        <div className="text-red-500">
+          Failed to load notes. Please try again later.
+        </div>
+      )}
+      {!notesLoading && !showNotesLoadingError && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {notes.length > 0 ? notesGrid : <div>No notes available.</div>}
+        </div>
+      )}
       {showAddNoteDialog && (
         <AddEditNoteDialog
           onDismiss={() => setShowAddNoteDialog(false)}
