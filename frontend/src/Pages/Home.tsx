@@ -4,11 +4,13 @@ import Note from "../Components/Note";
 import * as NotesApi from "../services/notes_api";
 import AddEditNoteDialog from "../Components/AddEditNoteDialog";
 import { FaPlus } from "react-icons/fa";
+import SignUpModal from "../Components/SignUpModal";
 
 export default function Home() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [notesLoading, setNotesLoading] = useState(true);
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(true);
 
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
@@ -96,6 +98,12 @@ export default function Home() {
             );
             setNoteToEdit(null);
           }}
+        />
+      )}
+      {showSignUpModal && (
+        <SignUpModal
+          onDismiss={() => setShowSignUpModal(false)}
+          onSignUpSuccessful={() => {}}
         />
       )}
     </main>
