@@ -1,6 +1,8 @@
 import type { User } from "../Models/User";
 import { useForm } from "react-hook-form";
 import * as NotesApi from "../services/notes_api";
+import { ConflictError } from "../Errors/http_errors";
+import { useState } from "react";
 
 interface SignUpModalProps {
   onDismiss: () => void;
@@ -8,6 +10,8 @@ interface SignUpModalProps {
 }
 
 const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps) => {
+  const [errorText, setErrorText] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -19,7 +23,11 @@ const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps) => {
       const newUser = await NotesApi.signUp(credentials);
       onSignUpSuccessful(newUser);
     } catch (error) {
-      alert(error);
+      if (error instanceof ConflictError) {
+        setErrorText(error.message);
+      } else {
+        alert(error);
+      }
       console.error(error);
     }
   }
@@ -29,6 +37,9 @@ const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps) => {
       <div className="bg-white rounded-lg p-6 shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">Sign Up</h2>
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+          {errorText && (
+            <span className="text-red-500 text-sm mb-2">{errorText}</span>
+          )}
           <label htmlFor="username" className="mb-2 font-semibold">
             Username
           </label>
